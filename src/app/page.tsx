@@ -1,9 +1,9 @@
-import Header from './components/Header';
-import Hero from './components/Hero';
-import Features from './components/Features';
-import GettingStarted from './components/GettingStarted';
-import Docs from './components/Docs';
-import Footer from './components/Footer';
+import Header from '@/app/components/Header';
+import Hero from '@/app/components/Hero';
+import Features from '@/app/components/Features';
+import GettingStarted from '@/app/components/GettingStarted';
+import Docs from '@/app/components/Docs';
+import Footer from '@/app/components/Footer';
 
 export default function Home() {
   return (
