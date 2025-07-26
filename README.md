@@ -1,40 +1,36 @@
-# create-chrome-ext
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-A CLI tool to quickly set up a new Chrome Extension project with a single command.
+## Getting Started
 
-## Usage
-
-To create a new Chrome Extension project, run the following command in your terminal:
+First, run the development server:
 
 ```bash
-npx create-chrome-ext [project-name]
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-Replace `[project-name]` with the desired name for your project. The CLI will guide you through the setup process.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Features
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-- **Interactive Interface**: A user-friendly command-line interface to guide you through project setup.
-- **Multiple Templates**: Choose from a variety of popular templates to get started quickly.
-- **Automatic Dependency Installation**: All necessary dependencies are installed automatically.
-- **Quick Setup**: Go from zero to a working Chrome Extension in seconds.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Available Templates
+## Learn More
 
-- **Vanilla JS**: A basic template with no frameworks, just plain JavaScript, HTML, and CSS.
-- **React + Vite**: A template for building your extension with React and Vite for a fast development experience.
-- **React + Next.js**: A template using Next.js for building a more complex extension with server-side rendering capabilities.
+To learn more about Next.js, take a look at the following resources:
 
-## Example
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-Here is an example of running the CLI and the success message you can expect:
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-```bash
-$ npx create-chrome-ext my-awesome-extension
+## Deploy on Vercel
 
-? Select a template: › Vanilla JS
-✔ Copied template files.
-✔ Installed dependencies.
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-✅ Success! Your new Chrome Extension project is ready in the "my-awesome-extension" directory.
-```
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

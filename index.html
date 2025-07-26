@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>create-chrome-ext - The Easiest Way to Build Chrome Extensions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-text {
+            background: linear-gradient(to right, #4F46E5, #EC4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-gray-300">
+
+    <!-- Header -->
+    <header class="bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-700">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <svg class="w-8 h-8 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                </svg>
+                <h1 class="text-2xl font-bold text-white">create-chrome-ext</h1>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#features" class="hover:text-indigo-400 transition-colors">Features</a>
+                <a href="#getting-started" class="hover:text-indigo-400 transition-colors">Get Started</a>
+                <a href="#docs" class="hover:text-indigo-400 transition-colors">Docs</a>
+                <a href="https://github.com/your-username/create-chrome-ext" target="_blank"
+                    class="bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill-rule="evenodd"
+                            d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.839 9.492.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.943.359.308.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <span>GitHub</span>
+                </a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden">
+                <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 space-y-2">
+            <a href="#features" class="block hover:text-indigo-400 transition-colors">Features</a>
+            <a href="#getting-started" class="block hover:text-indigo-400 transition-colors">Get Started</a>
+            <a href="#docs" class="block hover:text-indigo-400 transition-colors">Docs</a>
+            <a href="https://github.com/your-username/create-chrome-ext" target="_blank"
+                class="block hover:text-indigo-400 transition-colors">GitHub</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-16 md:py-24">
+
+        <!-- Hero Section -->
+        <section class="text-center">
+            <h2 class="text-4xl md:text-6xl font-black text-white leading-tight">The <span class="gradient-text">Easiest
+                    Way</span> to Build<br>Modern Chrome Extensions.</h2>
+            <p class="mt-6 max-w-2xl mx-auto text-lg text-gray-400">Stop wrestling with `manifest.json` and build
+                configurations. `create-chrome-ext` scaffolds a complete, modern development environment for your next
+                browser extension in seconds.</p>
+
+            <div class="mt-10 max-w-xl mx-auto">
+                <div class="bg-gray-800 border border-gray-700 rounded-lg p-4 flex items-center justify-between">
+                    <code id="copy-text" class="text-green-400 text-lg">$ npx create-chrome-ext</code>
+                    <button id="copy-button"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 transform active:scale-95 flex items-center space-x-2">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.353-.026.692-.026 1.038 0 .346.026.692.026 1.038 0 1.13.094 1.976 1.057 1.976 2.192V7.5M8.25 7.5h7.5M8.25 7.5c0 1.135-.845 2.098-1.976 2.192a48.424 48.424 0 01-1.038 0C4.12 9.598 3.275 8.635 3.275 7.5m5 0c0 .947.376 1.842.984 2.493m4.032-2.493c.608-.65.984-1.546.984-2.493m-4.032 2.493L9.75 10.5m4.032-2.493L14.25 10.5" />
+                        </svg>
+                        <span id="copy-button-text">Copy</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-24">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-white">Packed with Powerful Features</h3>
+                <p class="mt-2 text-gray-400">Everything you need for a modern development workflow.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-indigo-500/10 p-3 rounded-lg"><svg class="w-6 h-6 text-indigo-400"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                            </svg></div>
+                        <h4 class="text-xl font-semibold text-white">Multiple Templates</h4>
+                    </div>
+                    <p class="mt-4 text-gray-400">Choose from Vanilla JS, React + Vite, or React + Next.js to match your
+                        project's needs.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-indigo-500/10 p-3 rounded-lg"><svg class="w-6 h-6 text-indigo-400"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M10.25 2.25h-4.5a2.25 2.25 0 00-2.25 2.25v13.5a2.25 2.25 0 002.25 2.25h13.5a2.25 2.25 0 002.25-2.25v-4.5m-7.5-10.5h4.5m-4.5 0v4.5m0-4.5L15 6.75" />
+                            </svg></div>
+                        <h4 class="text-xl font-semibold text-white">Manifest V3 Ready</h4>
+                    </div>
+                    <p class="mt-4 text-gray-400">Generates a fully compliant `manifest.json` with sensible defaults, so
+                        you're up-to-date from the start.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700">
+                    <div class="flex items-center space-x-4">
+                        <div class="bg-indigo-500/10 p-3 rounded-lg"><svg class="w-6 h-6 text-indigo-400"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 7.5V18M15 7.5V18M3 16.811V8.69c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 010 1.954l-7.108 4.061A1.125 1.125 0 013 16.811z" />
+                            </svg></div>
+                        <h4 class="text-xl font-semibold text-white">Zero Configuration</h4>
+                    </div>
+                    <p class="mt-4 text-gray-400">All build tools and scripts are pre-configured. Just run `npm run dev`
+                        and start coding.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Getting Started Section -->
+        <section id="getting-started" class="py-24">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-white">Get Started in 3 Easy Steps</h3>
+                <p class="mt-2 text-gray-400">Go from zero to a running extension in under a minute.</p>
+            </div>
+            <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-8 text-center">
+                <!-- Step 1 -->
+                <div class="bg-gray-800/50 p-8 rounded-lg border border-gray-700">
+                    <div class="text-5xl font-black text-indigo-400">1</div>
+                    <h4 class="mt-4 text-xl font-semibold text-white">Run the Command</h4>
+                    <p class="mt-2 text-gray-400">Open your terminal and use `npx` to run the tool. Follow the
+                        interactive prompts.</p>
+                    <code
+                        class="block mt-4 bg-gray-900 text-green-400 p-2 rounded-md text-sm">npx create-chrome-ext</code>
+                </div>
+                <!-- Step 2 -->
+                <div class="bg-gray-800/50 p-8 rounded-lg border border-gray-700">
+                    <div class="text-5xl font-black text-indigo-400">2</div>
+                    <h4 class="mt-4 text-xl font-semibold text-white">Start Developing</h4>
+                    <p class="mt-2 text-gray-400">Navigate into your new project directory and start the development
+                        server.</p>
+                    <code
+                        class="block mt-4 bg-gray-900 text-green-400 p-2 rounded-md text-sm">cd my-app && npm run dev</code>
+                </div>
+                <!-- Step 3 -->
+                <div class="bg-gray-800/50 p-8 rounded-lg border border-gray-700">
+                    <div class="text-5xl font-black text-indigo-400">3</div>
+                    <h4 class="mt-4 text-xl font-semibold text-white">Load in Chrome</h4>
+                    <p class="mt-2 text-gray-400">Open `chrome://extensions`, enable Developer Mode, and load the `dist`
+                        or `build` folder.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Docs Section -->
+        <section id="docs" class="py-24">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-white">Documentation</h3>
+                <p class="mt-2 text-gray-400">All the details you need to get the most out of the tool.</p>
+            </div>
+            <div class="max-w-4xl mx-auto bg-gray-800/50 rounded-lg border border-gray-700 p-8 space-y-12">
+
+                <!-- Introduction -->
+                <div>
+                    <h4 class="text-2xl font-bold text-white border-l-4 border-indigo-500 pl-4">Introduction</h4>
+                    <p class="mt-4 text-gray-400">`create-chrome-ext` is a CLI tool that generates boilerplate code for
+                        modern Chrome extensions. It saves you from the tedious process of setting up build tools,
+                        configuring the manifest file, and structuring your project. With a single command, you get a
+                        production-ready setup so you can focus on what matters: building your extension's features.</p>
+                </div>
+
+                <!-- Available Templates -->
+                <div>
+                    <h4 class="text-2xl font-bold text-white border-l-4 border-indigo-500 pl-4">Available Templates</h4>
+                    <div class="mt-6 space-y-8">
+                        <div>
+                            <h5 class="text-xl font-semibold text-indigo-400">Vanilla JS</h5>
+                            <p class="mt-2 text-gray-400">The classic, no-frills approach. This template provides a
+                                basic structure with HTML, CSS, and JavaScript files for a popup. It's perfect for
+                                simple extensions, learning the basics of Chrome APIs, or when performance is critical
+                                and you want to avoid framework overhead.</p>
+                        </div>
+                        <div>
+                            <h5 class="text-xl font-semibold text-indigo-400">React + Vite</h5>
+                            <p class="mt-2 text-gray-400">For building rich, interactive UIs. This template uses React
+                                for component-based architecture and Vite for a lightning-fast development experience
+                                with Hot Module Replacement (HMR). It's the recommended choice for most modern
+                                extensions with a complex user interface.</p>
+                        </div>
+                        <div>
+                            <h5 class="text-xl font-semibold text-indigo-400">React + Next.js</h5>
+                            <p class="mt-2 text-gray-400">Leverage the power of a full-featured framework. This template
+                                is configured for static export (`output: 'export'`), making it suitable for multi-page
+                                extensions (e.g., a popup, an options page, and a full-page app). It's ideal for
+                                developers already familiar with the Next.js ecosystem.</p>
+                            <div class="mt-4 bg-yellow-900/50 border border-yellow-700 text-yellow-300 p-4 rounded-lg">
+                                <p><strong class="font-bold">Important Note:</strong> Chrome extensions cannot have
+                                    folders that start with an underscore (`_`). This template includes a build script
+                                    that automatically renames the `out/_next` directory to `out/next` and updates all
+                                    file paths accordingly. This process is handled for you automatically when you run
+                                    `npm run build`.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Structure -->
+                <div>
+                    <h4 class="text-2xl font-bold text-white border-l-4 border-indigo-500 pl-4">Generated Project
+                        Structure</h4>
+                    <p class="mt-4 text-gray-400">While the exact structure varies by template, all projects include:
+                    </p>
+                    <ul class="mt-4 list-disc list-inside text-gray-400 space-y-2">
+                        <li><strong class="text-white">`manifest.json`</strong>: The core configuration file for your
+                            extension.</li>
+                        <li><strong class="text-white">`package.json`</strong>: With pre-configured scripts for
+                            development and building.</li>
+                        <li><strong class="text-white">Entry point files</strong>: (e.g., `popup.html`, `options.html`)
+                            for your extension's UI.</li>
+                        <li><strong class="text-white">Scripts folder</strong>: For background and content scripts.</li>
+                        <li><strong class="text-white">`.gitignore`</strong>: Sensible defaults to keep your repository
+                            clean.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-700">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-500">
+            <p>Built by the Open Source Community. Inspired by projects like `create-react-app`.</p>
+            <p class="mt-2">This is a conceptual project. Code is not yet available on NPM.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Copy to clipboard
+        const copyButton = document.getElementById('copy-button');
+        const copyText = document.getElementById('copy-text');
+        const copyButtonText = document.getElementById('copy-button-text');
+
+        copyButton.addEventListener('click', () => {
+            const textToCopy = copyText.innerText;
+
+            // Use the Clipboard API
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                copyButtonText.innerText = 'Copied!';
+                copyButton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                copyButton.classList.add('bg-green-500');
+
+                setTimeout(() => {
+                    copyButtonText.innerText = 'Copy';
+                    copyButton.classList.remove('bg-green-500');
+                    copyButton.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                // Fallback for older browsers
+                try {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = textToCopy;
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+
+                    copyButtonText.innerText = 'Copied!';
+                    copyButton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+                    copyButton.classList.add('bg-green-500');
+
+                    setTimeout(() => {
+                        copyButtonText.innerText = 'Copy';
+                        copyButton.classList.remove('bg-green-500');
+                        copyButton.classList.add('bg-indigo-600', 'hover:bg-indigo-700');
+                    }, 2000);
+
+                } catch (e) {
+                    copyButtonText.innerText = 'Failed!';
+                    copyButton.classList.add('bg-red-500');
+                    setTimeout(() => {
+                        copyButtonText.innerText = 'Copy';
+                        copyButton.classList.remove('bg-red-500');
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
