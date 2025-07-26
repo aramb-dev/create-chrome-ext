@@ -11,7 +11,7 @@ This is a Chrome extension built with React and Next.js.
 
 ### Important Note on Build Process
 
-The build process includes custom steps (`next export` and a post-build script) to ensure the Next.js output is compatible with Chrome extensions.
+The build process includes a post-build script to ensure the Next.js output is compatible with Chrome extensions.
 
 ### Loading the Extension in Chrome
 
