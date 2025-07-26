@@ -1,0 +1,119 @@
+<BackLink />
+
+# Documentation
+
+<Section>
+
+`create-chrome-ext` is a CLI tool that generates boilerplate code for modern Chrome extensions. It saves you from the tedious process of setting up build tools, configuring the manifest file, and structuring your project. With a single command, you get a production-ready setup so you can focus on what matters: building your extension's features.
+
+</Section>
+
+## Available Templates
+
+<Section>
+
+### Vanilla JS
+
+The classic, no-frills approach. This template provides a basic structure with HTML, CSS, and JavaScript files for a popup. It's perfect for simple extensions, learning the basics of Chrome APIs, or when performance is critical and you want to avoid framework overhead.
+
+### React + Vite
+
+For building rich, interactive UIs. This template uses React for component-based architecture and Vite for a lightning-fast development experience with Hot Module Replacement (HMR). It's the recommended choice for most modern extensions with a complex user interface.
+
+### React + Next.js
+
+Leverage the power of a full-featured framework. This template is configured for static export (`output: 'export'`), making it suitable for multi-page extensions (e.g., a popup, an options page, and a full-page app). It's ideal for developers already familiar with the Next.js ecosystem.
+
+<Alert type="warning">
+**Important Note:** Chrome extensions cannot have folders that start with an underscore (`_`). This template includes a build script that automatically renames the `out/_next` directory to `out/next` and updates all file paths accordingly. This process is handled for you automatically when you run `npm run build`.
+</Alert>
+
+</Section>
+
+## Generated Project Structure
+
+<Section>
+
+While the exact structure varies by template, all projects include:
+
+- **`manifest.json`** - The core configuration file for your extension.
+- **`package.json`** - With pre-configured scripts for development and building.
+- **Entry point files** - (e.g., `popup.html`, `options.html`) for your extension's UI.
+- **Scripts folder** - For background and content scripts.
+- **`.gitignore`** - Sensible defaults to keep your repository clean.
+
+</Section>
+
+## Quick Start
+
+<Section>
+
+### 1. Create a new extension
+
+```bash
+npx create-chrome-ext
+```
+
+### 2. Navigate to your project
+
+```bash
+cd my-extension
+```
+
+### 3. Start development
+
+```bash
+npm run dev
+```
+
+### 4. Load in Chrome
+
+1. Open `chrome://extensions`
+2. Enable "Developer mode"
+3. Click "Load unpacked"
+4. Select your project's `dist` or `build` folder
+
+</Section>
+
+## Development Workflow
+
+<Section>
+
+### Hot Reload
+
+All templates support hot reload during development. Your changes will automatically update in the browser without manually reloading the extension.
+
+### Building for Production
+
+```bash
+npm run build
+```
+
+This creates an optimized build in the `dist` or `build` directory, ready for publishing to the Chrome Web Store.
+
+### Testing
+
+Each template includes basic testing setup. Run tests with:
+
+```bash
+npm test
+```
+
+</Section>
+
+## Chrome Extension APIs
+
+<Section>
+
+All templates come pre-configured with common Chrome extension APIs:
+
+- **Storage API** - For saving user preferences and data
+- **Tabs API** - For interacting with browser tabs
+- **Runtime API** - For background scripts and messaging
+- **Action API** - For popup and badge interactions
+
+<Alert type="info">
+Check the [Chrome Extension Documentation](https://developer.chrome.com/docs/extensions/) for complete API reference.
+</Alert>
+
+</Section>
