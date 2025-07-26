@@ -2,7 +2,6 @@ import Header from '@/app/components/Header';
 import Hero from '@/app/components/Hero';
 import Features from '@/app/components/Features';
 import GettingStarted from '@/app/components/GettingStarted';
-import Docs from '@/app/components/Docs';
 import Footer from '@/app/components/Footer';
 
 export default function Home() {
@@ -13,7 +12,6 @@ export default function Home() {
         <Hero />
         <Features />
         <GettingStarted />
-        <Docs />
       </main>
       <Footer />
     </div>

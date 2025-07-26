@@ -16,7 +16,7 @@ const Header = () => {
         <div className="hidden md:flex items-center space-x-8">
           <Link href="#features" className="hover:text-indigo-400 transition-colors">Features</Link>
           <Link href="#getting-started" className="hover:text-indigo-400 transition-colors">Get Started</Link>
-          <Link href="#docs" className="hover:text-indigo-400 transition-colors">Docs</Link>
+          <Link href="/docs" className="hover:text-indigo-400 transition-colors">Docs</Link>
           <a href="https://github.com/aramb-dev/create-chrome-ext" target="_blank" rel="noopener noreferrer"
             className="bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg transition-colors flex items-center space-x-2">
             <Github className="w-5 h-5" />
@@ -40,7 +40,7 @@ const Header = () => {
       <div id="mobile-menu" className={`${isMenuOpen ? '' : 'hidden'} md:hidden px-6 pb-4 space-y-2`}>
         <Link href="#features" className="block hover:text-indigo-400 transition-colors">Features</Link>
         <Link href="#getting-started" className="block hover:text-indigo-400 transition-colors">Get Started</Link>
-        <Link href="#docs" className="block hover:text-indigo-400 transition-colors">Docs</Link>
+        <Link href="/docs" className="block hover:text-indigo-400 transition-colors">Docs</Link>
         <a href="https://github.com/aramb-dev/create-chrome-ext" target="_blank" rel="noopener noreferrer"
           className="block hover:text-indigo-400 transition-colors">GitHub</a>
       </div>
