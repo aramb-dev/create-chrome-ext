@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import { Copy, Check } from 'lucide-react';
 
 const Hero = () => {
   const [copyButtonText, setCopyButtonText] = useState('Copy');
@@ -34,20 +35,11 @@ const Hero = () => {
             onClick={handleCopy}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 transform active:scale-95 flex items-center space-x-2"
           >
-            <svg
-              className="w-5 h-5"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.353-.026.692-.026 1.038 0 .346.026.692.026 1.038 0 1.13.094 1.976 1.057 1.976 2.192V7.5M8.25 7.5h7.5M8.25 7.5c0 1.135-.845 2.098-1.976 2.192a48.424 48.424 0 01-1.038 0C4.12 9.598 3.275 8.635 3.275 7.5m5 0c0 .947.376 1.842.984 2.493m4.032-2.493c.608-.65.984-1.546.984-2.493m-4.032 2.493L9.75 10.5m4.032-2.493L14.25 10.5"
-              />
-            </svg>
+            {copyButtonText === 'Copied!' ? (
+              <Check className="w-5 h-5" />
+            ) : (
+              <Copy className="w-5 h-5" />
+            )}
             <span id="copy-button-text">{copyButtonText}</span>
           </button>
         </div>
