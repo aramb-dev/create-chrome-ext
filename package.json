@@ -1,0 +1,23 @@
+{
+  "name": "create-chrome-ext",
+  "version": "1.0.0",
+  "description": "A brief description of your project.",
+  "main": "index.js",
+  "bin": {
+    "create-chrome-ext": "bin/create-chrome-ext.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^14.0.0",
+    "execa": "^9.6.0",
+    "fs-extra": "^11.3.0",
+    "inquirer": "^12.8.2"
+  }
+}
