@@ -114,6 +114,14 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
       </div>
     ),
 
+    // Docs navigation component
+    DocsNavigation: ({ previous, next }: {
+      previous?: { href: string; title: string; description?: string };
+      next?: { href: string; title: string; description?: string };
+    }) => (
+      <DocsNavigation previous={previous} next={next} />
+    ),
+
     ...components,
   };
 }

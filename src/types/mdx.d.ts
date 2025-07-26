@@ -10,6 +10,18 @@ declare global {
         type?: 'warning' | 'info' | 'error';
       };
       BackLink: {};
+      DocsNavigation: {
+        previous?: {
+          href: string;
+          title: string;
+          description?: string;
+        };
+        next?: {
+          href: string;
+          title: string;
+          description?: string;
+        };
+      };
     }
   }
 }
