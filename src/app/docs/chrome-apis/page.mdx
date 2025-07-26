@@ -1,0 +1,609 @@
+# Chrome APIs
+
+Learn how to use Chrome Extension APIs to add powerful functionality to your extensions.
+
+## Essential APIs
+
+These APIs are fundamental to most Chrome extensions:
+
+<Section>
+
+### Storage API
+
+Store and retrieve user data across browser sessions.
+
+<Alert type="info">
+Add `"storage"` permission to your manifest.json to use this API.
+</Alert>
+
+```javascript
+// Save data
+await chrome.storage.sync.set({ key: 'value' });
+
+// Load data
+const result = await chrome.storage.sync.get(['key']);
+console.log(result.key); // 'value'
+
+// Listen for changes
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  if (changes.key) {
+    console.log('Key changed from', changes.key.oldValue, 'to', changes.key.newValue);
+  }
+});
+```
+
+**Storage Areas:**
+- `chrome.storage.sync` - Synced across devices (100KB limit)
+- `chrome.storage.local` - Local only (5MB limit)
+- `chrome.storage.session` - Session only (1MB limit)
+
+### Tabs API
+
+Interact with browser tabs and windows.
+
+```javascript
+// Get current active tab
+const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+// Create new tab
+const newTab = await chrome.tabs.create({ url: 'https://example.com' });
+
+// Listen for tab updates
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status === 'complete') {
+    console.log('Tab loaded:', tab.url);
+  }
+});
+
+// Execute script in tab
+await chrome.tabs.executeScript(tabId, {
+  code: 'document.title'
+});
+```
+
+### Runtime API
+
+Core extension functionality and messaging.
+
+```javascript
+// Get extension info
+const manifest = chrome.runtime.getManifest();
+
+// Open options page
+chrome.runtime.openOptionsPage();
+
+// Message passing between components
+chrome.runtime.sendMessage({ action: 'getData' }, (response) => {
+  console.log('Response:', response);
+});
+
+// Listen for messages
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'getData') {
+    sendResponse({ data: 'Hello World' });
+  }
+});
+```
+
+</Section>
+
+## User Interface APIs
+
+<Section>
+
+### Action API (Popup & Badge)
+
+Control the extension icon and popup.
+
+```javascript
+// Set badge text
+chrome.action.setBadgeText({ text: '5' });
+
+// Set badge color
+chrome.action.setBadgeBackgroundColor({ color: '#FF0000' });
+
+// Set icon
+chrome.action.setIcon({
+  path: {
+    16: 'icons/icon16.png',
+    32: 'icons/icon32.png'
+  }
+});
+
+// Set title (tooltip)
+chrome.action.setTitle({ title: 'New title' });
+
+// Enable/disable extension
+chrome.action.enable();
+chrome.action.disable();
+```
+
+### Context Menus API
+
+Add items to right-click menus.
+
+```javascript
+// Create context menu
+chrome.contextMenus.create({
+  id: 'myMenuItem',
+  title: 'Save to Extension',
+  contexts: ['selection', 'link']
+});
+
+// Handle context menu clicks
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === 'myMenuItem') {
+    console.log('Selected text:', info.selectionText);
+    console.log('Link URL:', info.linkUrl);
+  }
+});
+```
+
+### Notifications API
+
+Show system notifications.
+
+```javascript
+// Create notification
+chrome.notifications.create({
+  type: 'basic',
+  iconUrl: 'icons/icon48.png',
+  title: 'Extension Notification',
+  message: 'Hello from your extension!'
+});
+
+// Handle notification clicks
+chrome.notifications.onClicked.addListener((notificationId) => {
+  console.log('Notification clicked:', notificationId);
+});
+```
+
+</Section>
+
+## Background Script Patterns
+
+<Section>
+
+### Service Worker (Manifest V3)
+
+Background scripts run as service workers in Manifest V3:
+
+```javascript
+// background.js
+chrome.runtime.onInstalled.addListener(() => {
+  console.log('Extension installed');
+});
+
+chrome.action.onClicked.addListener(async (tab) => {
+  // Handle extension icon click
+  console.log('Extension clicked on tab:', tab.url);
+});
+
+// Handle extension startup
+chrome.runtime.onStartup.addListener(() => {
+  console.log('Browser started');
+});
+
+// Handle messages from popup/content scripts
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  // Handle different message types
+  switch (request.action) {
+    case 'getData':
+      // Async operations
+      handleGetData().then(sendResponse);
+      return true; // Keep message channel open
+
+    case 'saveData':
+      handleSaveData(request.data);
+      sendResponse({ success: true });
+      break;
+  }
+});
+
+async function handleGetData() {
+  const result = await chrome.storage.sync.get(['data']);
+  return { data: result.data };
+}
+
+function handleSaveData(data) {
+  chrome.storage.sync.set({ data });
+}
+```
+
+### Alarms API
+
+Schedule recurring or one-time tasks.
+
+```javascript
+// Create alarm
+chrome.alarms.create('myAlarm', {
+  delayInMinutes: 1,
+  periodInMinutes: 5
+});
+
+// Handle alarm
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === 'myAlarm') {
+    console.log('Alarm triggered!');
+    // Perform scheduled task
+  }
+});
+```
+
+</Section>
+
+## Content Script Integration
+
+<Section>
+
+### Injecting Content Scripts
+
+Content scripts run in the context of web pages:
+
+```javascript
+// Programmatic injection
+chrome.tabs.executeScript(tabId, {
+  file: 'content.js'
+});
+
+// Or inline code
+chrome.tabs.executeScript(tabId, {
+  code: `
+    const elements = document.querySelectorAll('.highlight');
+    elements.forEach(el => el.style.background = 'yellow');
+  `
+});
+```
+
+### Content Script Communication
+
+```javascript
+// content.js
+// Send message to background/popup
+chrome.runtime.sendMessage({
+  action: 'pageInfo',
+  title: document.title,
+  url: window.location.href
+});
+
+// Listen for messages from extension
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === 'highlight') {
+    highlightText(request.text);
+    sendResponse({ success: true });
+  }
+});
+
+function highlightText(text) {
+  // Highlight logic here
+}
+```
+
+### DOM Manipulation
+
+```javascript
+// Safe DOM manipulation in content scripts
+function highlightElements() {
+  const elements = document.querySelectorAll('p');
+  elements.forEach(el => {
+    if (el.textContent.includes('keyword')) {
+      el.style.backgroundColor = '#ffff00';
+    }
+  });
+}
+
+// Wait for DOM to be ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', highlightElements);
+} else {
+  highlightElements();
+}
+```
+
+</Section>
+
+## Advanced APIs
+
+<Section>
+
+### Bookmarks API
+
+Manage browser bookmarks.
+
+```javascript
+// Search bookmarks
+const bookmarks = await chrome.bookmarks.search('keyword');
+
+// Create bookmark
+const bookmark = await chrome.bookmarks.create({
+  parentId: '1',
+  title: 'My Bookmark',
+  url: 'https://example.com'
+});
+
+// Listen for bookmark changes
+chrome.bookmarks.onCreated.addListener((id, bookmark) => {
+  console.log('Bookmark created:', bookmark.title);
+});
+```
+
+### History API
+
+Access browser history (with permission).
+
+```javascript
+// Search history
+const historyItems = await chrome.history.search({
+  text: 'github',
+  maxResults: 10
+});
+
+// Add to history
+chrome.history.addUrl({ url: 'https://example.com' });
+
+// Listen for visits
+chrome.history.onVisited.addListener((historyItem) => {
+  console.log('Visited:', historyItem.url);
+});
+```
+
+### WebRequest API
+
+Monitor and modify network requests.
+
+<Alert type="warning">
+Requires host permissions and may need additional justification for Chrome Web Store.
+</Alert>
+
+```javascript
+// Block requests
+chrome.webRequest.onBeforeRequest.addListener(
+  (details) => {
+    return { cancel: details.url.includes('ads') };
+  },
+  { urls: ['<all_urls>'] },
+  ['blocking']
+);
+
+// Modify headers
+chrome.webRequest.onBeforeSendHeaders.addListener(
+  (details) => {
+    details.requestHeaders.push({
+      name: 'X-Custom-Header',
+      value: 'Extension'
+    });
+    return { requestHeaders: details.requestHeaders };
+  },
+  { urls: ['https://*.example.com/*'] },
+  ['blocking', 'requestHeaders']
+);
+```
+
+</Section>
+
+## Permission Management
+
+<Section>
+
+### Required Permissions
+
+Add to `manifest.json`:
+
+```json
+{
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "contextMenus",
+    "notifications",
+    "alarms",
+    "bookmarks",
+    "history"
+  ],
+  "host_permissions": [
+    "https://*.example.com/*",
+    "<all_urls>"
+  ]
+}
+```
+
+### Optional Permissions
+
+Request permissions when needed:
+
+```javascript
+// Request permission
+const granted = await chrome.permissions.request({
+  permissions: ['bookmarks'],
+  origins: ['https://*.example.com/*']
+});
+
+if (granted) {
+  // Use the API
+  const bookmarks = await chrome.bookmarks.getTree();
+}
+
+// Check existing permissions
+const hasPermission = await chrome.permissions.contains({
+  permissions: ['bookmarks']
+});
+```
+
+### Permission Best Practices
+
+- **Request minimal permissions** - Only what you actually need
+- **Use activeTab** - Instead of broad tab permissions
+- **Explain to users** - Why you need each permission
+- **Use optional permissions** - Request when features are used
+
+</Section>
+
+## Error Handling
+
+<Section>
+
+### Common Error Patterns
+
+```javascript
+// Check for Chrome API availability
+if (typeof chrome !== 'undefined' && chrome.storage) {
+  // Safe to use chrome.storage
+} else {
+  console.error('Chrome APIs not available');
+}
+
+// Handle runtime errors
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  try {
+    // Your message handling logic
+    handleMessage(request);
+    sendResponse({ success: true });
+  } catch (error) {
+    console.error('Message handling error:', error);
+    sendResponse({ error: error.message });
+  }
+});
+
+// Check for last error
+if (chrome.runtime.lastError) {
+  console.error('Chrome API error:', chrome.runtime.lastError.message);
+}
+
+// Async error handling
+async function safeApiCall() {
+  try {
+    const result = await chrome.storage.sync.get(['key']);
+    return result;
+  } catch (error) {
+    console.error('Storage error:', error);
+    return null;
+  }
+}
+```
+
+### Debugging Tips
+
+- **Check console errors** - In extension popup, background page, and content scripts
+- **Use chrome://extensions** - Enable developer mode for debugging
+- **Test permissions** - Verify all required permissions are granted
+- **Validate manifest** - Ensure proper API declarations
+
+</Section>
+
+## React Integration Examples
+
+<Section>
+
+### Using Chrome APIs in React
+
+```jsx
+// hooks/useChromeStorage.js
+import { useState, useEffect } from 'react';
+
+export function useChromeStorage(key, defaultValue) {
+  const [value, setValue] = useState(defaultValue);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Load initial value
+    chrome.storage.sync.get([key]).then(result => {
+      setValue(result[key] ?? defaultValue);
+      setLoading(false);
+    });
+
+    // Listen for changes
+    const listener = (changes) => {
+      if (changes[key]) {
+        setValue(changes[key].newValue);
+      }
+    };
+
+    chrome.storage.onChanged.addListener(listener);
+    return () => chrome.storage.onChanged.removeListener(listener);
+  }, [key, defaultValue]);
+
+  const updateValue = async (newValue) => {
+    await chrome.storage.sync.set({ [key]: newValue });
+    setValue(newValue);
+  };
+
+  return [value, updateValue, loading];
+}
+```
+
+```jsx
+// components/Settings.jsx
+import { useChromeStorage } from '../hooks/useChromeStorage';
+
+export function Settings() {
+  const [settings, setSettings, loading] = useChromeStorage('settings', {
+    theme: 'light',
+    notifications: true
+  });
+
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <div>
+      <label>
+        <input
+          type="checkbox"
+          checked={settings.notifications}
+          onChange={(e) => setSettings({
+            ...settings,
+            notifications: e.target.checked
+          })}
+        />
+        Enable notifications
+      </label>
+    </div>
+  );
+}
+```
+
+### Background Script Communication
+
+```jsx
+// utils/chromeApi.js
+export async function sendBackgroundMessage(action, data) {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ action, data }, resolve);
+  });
+}
+
+// components/TabList.jsx
+import { useState, useEffect } from 'react';
+import { sendBackgroundMessage } from '../utils/chromeApi';
+
+export function TabList() {
+  const [tabs, setTabs] = useState([]);
+
+  useEffect(() => {
+    sendBackgroundMessage('getTabs').then(setTabs);
+  }, []);
+
+  return (
+    <ul>
+      {tabs.map(tab => (
+        <li key={tab.id}>{tab.title}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+</Section>
+
+<DocsNavigation
+  previous={{
+    href: "/docs/project-structure",
+    title: "Project Structure",
+    description: "Understanding generated files"
+  }}
+  next={{
+    href: "/docs/faq",
+    title: "FAQ",
+    description: "Common questions and troubleshooting"
+  }}
+/>

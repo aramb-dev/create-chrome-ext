@@ -1,0 +1,331 @@
+# React + Vite Template
+
+This template offers a powerful and fast development experience for building complex and interactive user interfaces. It leverages React's component model and Vite's near-instant Hot Module Replacement (HMR).
+
+## When to Use React + Vite
+
+<Section>
+
+Choose the React + Vite template when you want:
+
+- **Rich, interactive UIs** - Complex interfaces with multiple components
+- **Component-based architecture** - Reusable, maintainable code structure
+- **Fast development experience** - Near-instant hot reload during development
+- **Modern tooling** - Latest React features with excellent dev tools
+- **State management** - Built-in React state with optional libraries like Zustand or Redux
+
+</Section>
+
+## Project Structure
+
+When you create a React + Vite extension, you get:
+
+```
+react-vite/
+├── public/
+│   ├── icons/
+│   │   ├── icon16.png
+│   │   ├── icon48.png
+│   │   └── icon128.png
+│   └── manifest.json
+├── src/
+│   ├── App.jsx
+│   ├── main.jsx
+│   ├── App.css
+│   └── index.css
+├── index.html
+├── package.json
+├── vite.config.js
+└── .gitignore
+```
+
+<Section>
+
+### Key Files
+
+- **`public/`** - Static assets including `manifest.json` and icons
+- **`src/`** - All your React components and application code
+- **`index.html`** - Main HTML file that loads your React app
+- **`vite.config.js`** - Pre-configured for building Chrome extensions
+- **`App.jsx`** - Main React component
+
+</Section>
+
+## Development Workflow
+
+<Section>
+
+### Starting Development
+
+```bash
+cd my-react-extension
+npm run dev
+```
+
+This starts Vite's development server with:
+- **Hot Module Replacement (HMR)** - Changes appear instantly
+- **Fast refresh** - React state preservation during updates
+- **Error overlay** - Clear error messages in the browser
+- **Automatic building** - Extension files updated on save
+
+### Loading in Chrome
+
+1. Open `chrome://extensions`
+2. Enable Developer mode
+3. Click "Load unpacked"
+4. Select the `dist` folder that's created during development
+
+<Alert type="info">
+The extension will automatically reload when you make changes to your code!
+</Alert>
+
+</Section>
+
+## Key Features
+
+<Section>
+
+### Modern React Setup
+
+Your project comes with:
+- **React 18** - Latest React features including concurrent features
+- **JSX support** - Write components with JSX syntax
+- **ES6+ support** - Modern JavaScript features
+- **CSS Modules** - Scoped styling (optional)
+- **TypeScript ready** - Add TypeScript with one command
+
+### Optimized Build Process
+
+Vite provides:
+- **Fast builds** - Significantly faster than webpack-based tools
+- **Tree shaking** - Removes unused code from bundles
+- **Code splitting** - Automatic optimization for loading
+- **Asset optimization** - Images and other assets are optimized
+
+</Section>
+
+## Example: Tab Manager Extension
+
+<Section>
+
+Here's an example of a tab management extension:
+
+**App.jsx:**
+```jsx
+import { useState, useEffect } from 'react'
+import './App.css'
+
+function App() {
+  const [tabs, setTabs] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    loadTabs()
+  }, [])
+
+  const loadTabs = async () => {
+    try {
+      const allTabs = await chrome.tabs.query({})
+      setTabs(allTabs)
+    } catch (error) {
+      console.error('Failed to load tabs:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const closeTab = async (tabId) => {
+    await chrome.tabs.remove(tabId)
+    setTabs(tabs.filter(tab => tab.id !== tabId))
+  }
+
+  const switchToTab = async (tabId) => {
+    await chrome.tabs.update(tabId, { active: true })
+    window.close() // Close popup after switching
+  }
+
+  if (loading) {
+    return <div className="loading">Loading tabs...</div>
+  }
+
+  return (
+    <div className="app">
+      <header>
+        <h1>Tab Manager</h1>
+        <p>{tabs.length} tabs open</p>
+      </header>
+      <div className="tab-list">
+        {tabs.map(tab => (
+          <div key={tab.id} className="tab-item">
+            <img src={tab.favIconUrl} alt="" className="favicon" />
+            <div className="tab-info">
+              <h3 onClick={() => switchToTab(tab.id)}>{tab.title}</h3>
+              <p>{new URL(tab.url).hostname}</p>
+            </div>
+            <button
+              onClick={() => closeTab(tab.id)}
+              className="close-btn"
+            >
+              ✕
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default App
+```
+
+**manifest.json** (in public folder):
+```json
+{
+  "manifest_version": 3,
+  "name": "Tab Manager",
+  "version": "1.0.0",
+  "description": "Manage your browser tabs efficiently",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "permissions": ["tabs"],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
+```
+
+</Section>
+
+## Adding Dependencies
+
+<Section>
+
+### UI Libraries
+
+Popular React libraries work great with this template:
+
+```bash
+# Material-UI
+npm install @mui/material @emotion/react @emotion/styled
+
+# Chakra UI
+npm install @chakra-ui/react @emotion/react @emotion/styled
+
+# Ant Design
+npm install antd
+```
+
+### State Management
+
+```bash
+# Zustand (recommended for extensions)
+npm install zustand
+
+# Redux Toolkit
+npm install @reduxjs/toolkit react-redux
+```
+
+### Utility Libraries
+
+```bash
+# Date handling
+npm install date-fns
+
+# HTTP requests
+npm install axios
+
+# Form handling
+npm install react-hook-form
+```
+
+</Section>
+
+## Configuration
+
+<Section>
+
+### Vite Configuration
+
+The `vite.config.js` is pre-configured for Chrome extensions:
+
+```javascript
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  build: {
+    outDir: 'dist',
+    rollupOptions: {
+      input: {
+        popup: 'index.html'
+      }
+    }
+  }
+})
+```
+
+### Adding TypeScript
+
+To add TypeScript support:
+
+```bash
+npm install -D typescript @types/react @types/react-dom
+```
+
+Then rename your `.jsx` files to `.tsx` and add a `tsconfig.json`.
+
+</Section>
+
+## Building for Production
+
+<Section>
+
+```bash
+npm run build
+```
+
+The production build:
+- **Optimizes React code** - Minification and dead code elimination
+- **Bundles assets** - All resources in the `dist` folder
+- **Validates manifest** - Ensures Chrome Web Store compatibility
+- **Generates source maps** - For debugging production issues
+
+The `dist` folder contains everything needed for the Chrome Web Store.
+
+</Section>
+
+## Advantages & Trade-offs
+
+<Section>
+
+### Advantages
+- **Fast development** - Hot reload and fast refresh
+- **Component reusability** - Modular, maintainable code
+- **Rich ecosystem** - Thousands of React libraries available
+- **Great debugging** - React DevTools support
+- **Modern workflow** - Latest development practices
+
+### Trade-offs
+- **Larger bundle size** - React and Vite add overhead
+- **Build complexity** - More configuration options
+- **Learning curve** - Requires React knowledge
+- **Development dependencies** - More packages to manage
+
+</Section>
+
+<DocsNavigation
+  previous={{
+    href: "/docs/templates/vanilla",
+    title: "Vanilla JavaScript Template",
+    description: "Lightweight vanilla JS template"
+  }}
+  next={{
+    href: "/docs/templates/react-nextjs",
+    title: "React + Next.js Template",
+    description: "Full-featured framework for complex extensions"
+  }}
+/>

@@ -1,127 +1,62 @@
 <BackLink />
 
-# Documentation
+# create-chrome-ext Documentation
 
-<Section>
+Welcome to the official documentation for create-chrome-ext. This guide will walk you through everything you need to know, from creating your first extension to understanding the details of your project's structure.
 
-`create-chrome-ext` is a CLI tool that generates boilerplate code for modern Chrome extensions. It saves you from the tedious process of setting up build tools, configuring the manifest file, and structuring your project. With a single command, you get a production-ready setup so you can focus on what matters: building your extension's features.
+## Getting Started
 
-</Section>
-
-## Available Templates
-
-<Section>
-
-### Vanilla JS
-
-The classic, no-frills approach. This template provides a basic structure with HTML, CSS, and JavaScript files for a popup. It's perfect for simple extensions, learning the basics of Chrome APIs, or when performance is critical and you want to avoid framework overhead.
-
-### React + Vite
-
-For building rich, interactive UIs. This template uses React for component-based architecture and Vite for a lightning-fast development experience with Hot Module Replacement (HMR). It's the recommended choice for most modern extensions with a complex user interface.
-
-### React + Next.js
-
-Leverage the power of a full-featured framework. This template is configured for static export (`output: 'export'`), making it suitable for multi-page extensions (e.g., a popup, an options page, and a full-page app). It's ideal for developers already familiar with the Next.js ecosystem.
-
-<Alert type="warning">
-**Important Note:** Chrome extensions cannot have folders that start with an underscore (`_`). This template includes a build script that automatically renames the `out/_next` directory to `out/next` and updates all file paths accordingly. This process is handled for you automatically when you run `npm run build`.
-</Alert>
-
-</Section>
-
-## Generated Project Structure
-
-<Section>
-
-While the exact structure varies by template, all projects include:
-
-- **`manifest.json`** - The core configuration file for your extension.
-- **`package.json`** - With pre-configured scripts for development and building.
-- **Entry point files** - (e.g., `popup.html`, `options.html`) for your extension's UI.
-- **Scripts folder** - For background and content scripts.
-- **`.gitignore`** - Sensible defaults to keep your repository clean.
-
-</Section>
-
-## Quick Start
-
-<Section>
-
-### 1. Create a new extension
+create-chrome-ext is a command-line tool that allows you to generate a modern Chrome extension boilerplate in seconds. To get started, run the following command in your terminal:
 
 ```bash
 npx create-chrome-ext
 ```
 
-### 2. Navigate to your project
+The tool will guide you through a few simple prompts to name your project and select a template. Once it's finished, you'll have a complete, ready-to-run extension project.
 
-```bash
-cd my-extension
-```
+### The Three-Step Process
 
-### 3. Start development
+1. **Run the Command**: Execute `npx create-chrome-ext` and follow the on-screen instructions.
+2. **Start Developing**: Navigate into your new project folder (`cd my-app`) and run `npm run dev` to start the development server.
+3. **Load in Chrome**: Open `chrome://extensions`, enable "Developer mode," and load the generated build folder (`dist` or `build`).
 
-```bash
-npm run dev
-```
+## Core Concepts
 
-### 4. Load in Chrome
-
-1. Open `chrome://extensions`
-2. Enable "Developer mode"
-3. Click "Load unpacked"
-4. Select your project's `dist` or `build` folder
-
-</Section>
-
-## Development Workflow
+The primary goal of this tool is to eliminate the friction and repetitive setup involved in modern extension development. It handles the configuration so you can focus on building features.
 
 <Section>
 
-### Hot Reload
+### Zero Configuration
+All build tools, scripts, and manifest files are pre-configured and optimized for extension development.
 
-All templates support hot reload during development. Your changes will automatically update in the browser without manually reloading the extension.
+### Modern Tooling
+Use the frameworks you love, like React and Vite, in an environment that's set up for the specific constraints of browser extensions.
 
-### Building for Production
-
-```bash
-npm run build
-```
-
-This creates an optimized build in the `dist` or `build` directory, ready for publishing to the Chrome Web Store.
-
-### Testing
-
-Each template includes basic testing setup. Run tests with:
-
-```bash
-npm test
-```
+### Manifest V3 Ready
+Every template is built to comply with the latest Manifest V3 standards, ensuring your extension is secure and future-proof.
 
 </Section>
 
-## Chrome Extension APIs
+## Available Templates
 
-<Section>
+You can choose from three distinct templates, each designed for a different use case and development style:
 
-All templates come pre-configured with common Chrome extension APIs:
+- **[Vanilla JavaScript](/docs/templates/vanilla)** - Lightweight and straightforward
+- **[React + Vite](/docs/templates/react-vite)** - Modern React development with fast HMR
+- **[React + Next.js](/docs/templates/react-nextjs)** - Full-featured framework for complex extensions
 
-- **Storage API** - For saving user preferences and data
-- **Tabs API** - For interacting with browser tabs
-- **Runtime API** - For background scripts and messaging
-- **Action API** - For popup and badge interactions
+## Next Steps
 
-<Alert type="info">
-Check the [Chrome Extension Documentation](https://developer.chrome.com/docs/extensions/) for complete API reference.
-</Alert>
+You are now ready to start building your Chrome extension:
 
-</Section>
+- **[Quick Start Guide](/docs/quick-start)** - Get your first extension running
+- **[Project Structure](/docs/project-structure)** - Understand the generated files
+- **[Chrome APIs](/docs/chrome-apis)** - Learn about extension capabilities
 
 <DocsNavigation
   next={{
     href: "/docs/quick-start",
     title: "Quick Start",
-    description: "Get up and running with your first extension in minutes"
+    description: "Get your first extension up and running in minutes"
   }}
 />

@@ -1,0 +1,421 @@
+# FAQ
+
+Common questions and troubleshooting for create-chrome-ext.
+
+## Getting Started
+
+<Section>
+
+### Q: Which template should I choose?
+
+**A:** Choose based on your experience and project needs:
+
+- **Vanilla JavaScript** - Best for simple extensions, learning, or if you prefer no build tools
+- **React + Vite** - Ideal for modern React development with fast build times
+- **React + Next.js** - Perfect for complex extensions with multiple pages or when you need server-side generation features
+
+### Q: Do I need Node.js experience?
+
+**A:** For the Vanilla JavaScript template, no Node.js experience is required. For React templates, basic familiarity with Node.js, NPM, and React will be helpful.
+
+### Q: Can I switch templates later?
+
+**A:** While possible, it's easier to start with the right template. The generated file structures are quite different, so switching would require significant refactoring.
+
+</Section>
+
+## Development Issues
+
+<Section>
+
+### Q: Extension not loading in Chrome
+
+**A:** Check these common issues:
+
+1. **Manifest errors** - Validate your `manifest.json` syntax
+2. **Build directory** - Make sure you're loading the correct folder (`dist/` for Vite, `out/` for Next.js)
+3. **File paths** - Ensure all referenced files exist in the build output
+4. **Permissions** - Verify required permissions are declared
+
+### Q: Hot reload not working
+
+**A:** Hot reload behavior varies by template:
+
+- **Vanilla JS** - No hot reload; refresh extension manually
+- **React + Vite** - Should work automatically; check console for errors
+- **React + Next.js** - Limited support; rebuild and reload extension
+
+### Q: Build failing with errors
+
+**A:** Common solutions:
+
+```bash
+# Clear dependencies and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# Clear build cache
+rm -rf dist/ out/ .next/
+
+# Check Node.js version (16+ recommended)
+node --version
+```
+
+### Q: Content scripts not working
+
+**A:** Verify:
+
+1. **Manifest declaration** - Content scripts must be declared in `manifest.json`
+2. **URL patterns** - Check `matches` patterns are correct
+3. **File paths** - Ensure content script files exist in build output
+4. **Timing** - Content scripts run after DOM load
+
+Example manifest configuration:
+```json
+{
+  "content_scripts": [{
+    "matches": ["https://*.example.com/*"],
+    "js": ["content.js"],
+    "run_at": "document_end"
+  }]
+}
+```
+
+</Section>
+
+## Chrome Store Submission
+
+<Section>
+
+### Q: How do I prepare for Chrome Web Store?
+
+**A:** Follow these steps:
+
+1. **Test thoroughly** - Verify all functionality works
+2. **Optimize build** - Use production builds (`npm run build`)
+3. **Review permissions** - Only request what you need
+4. **Create store assets** - Screenshots, descriptions, icons
+5. **Follow policies** - Review Chrome Web Store guidelines
+
+### Q: What are the icon requirements?
+
+**A:** Chrome requires these icon sizes:
+
+- **16x16** - Extension icon in browser
+- **48x48** - Extension management page
+- **128x128** - Chrome Web Store listing
+
+All templates include placeholder icons in the correct sizes.
+
+### Q: Can I monetize my extension?
+
+**A:** Yes, but follow Chrome Web Store policies:
+
+- **No ads in popups** - Limited space and poor UX
+- **Respect user privacy** - Minimal data collection
+- **Clear value proposition** - Users should understand what they're paying for
+- **Use Chrome Web Store payments** - For paid extensions
+
+### Q: Extension rejected by Chrome Web Store
+
+**A:** Common rejection reasons:
+
+- **Insufficient functionality** - Extension must provide clear value
+- **Policy violations** - Review developer program policies
+- **Misleading descriptions** - Accurately describe functionality
+- **Excessive permissions** - Only request necessary permissions
+- **Quality issues** - Fix bugs and improve user experience
+
+</Section>
+
+## API and Permissions
+
+<Section>
+
+### Q: How do I request minimal permissions?
+
+**A:** Use these strategies:
+
+```json
+{
+  "permissions": [
+    "activeTab"  // Instead of "tabs" for basic tab access
+  ],
+  "optional_permissions": [
+    "bookmarks",  // Request when feature is used
+    "history"
+  ],
+  "host_permissions": [
+    "https://specific-site.com/*"  // Instead of "<all_urls>"
+  ]
+}
+```
+
+### Q: What's the difference between Manifest V2 and V3?
+
+**A:** Manifest V3 changes:
+
+- **Service workers** - Replace background pages
+- **Host permissions** - Separate from regular permissions
+- **Content Security Policy** - Stricter by default
+- **Remote code** - Not allowed in extensions
+
+All create-chrome-ext templates use Manifest V3.
+
+### Q: How do I handle cross-origin requests?
+
+**A:** Use these approaches:
+
+1. **Declare host permissions**:
+```json
+{
+  "host_permissions": ["https://api.example.com/*"]
+}
+```
+
+2. **Use content scripts** for same-origin requests
+3. **Proxy through background script** for API calls
+
+### Q: Storage quota exceeded
+
+**A:** Chrome storage limits:
+
+- `chrome.storage.sync` - 100KB (synced across devices)
+- `chrome.storage.local` - 5MB (local only)
+- `chrome.storage.session` - 1MB (session only)
+
+Use `chrome.storage.local` for larger data sets.
+
+</Section>
+
+## Framework-Specific Questions
+
+<Section>
+
+### Q: How do I add routing in React templates?
+
+**A:** Depends on the template:
+
+**React + Vite:**
+```bash
+npm install react-router-dom
+```
+
+**React + Next.js:**
+- File-based routing is built-in
+- Create files in `pages/` directory
+- Each file becomes a route
+
+### Q: Can I use TypeScript?
+
+**A:** Yes! Convert existing templates:
+
+```bash
+# Install TypeScript
+npm install -D typescript @types/react @types/node
+
+# Rename files from .js to .tsx
+# Add tsconfig.json
+```
+
+Or request TypeScript templates in future updates.
+
+### Q: How do I add CSS frameworks?
+
+**A:** Popular options:
+
+**Tailwind CSS:**
+```bash
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+**Styled Components:**
+```bash
+npm install styled-components
+```
+
+**Material-UI:**
+```bash
+npm install @mui/material @emotion/react @emotion/styled
+```
+
+### Q: Bundle size too large
+
+**A:** Optimization strategies:
+
+1. **Tree shaking** - Remove unused code
+2. **Code splitting** - Split large bundles
+3. **Minimize dependencies** - Only import what you need
+4. **Use production builds** - `npm run build`
+
+Example Vite optimization:
+```javascript
+// vite.config.js
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom']
+        }
+      }
+    }
+  }
+})
+```
+
+</Section>
+
+## Debugging and Testing
+
+<Section>
+
+### Q: How do I debug my extension?
+
+**A:** Use Chrome DevTools:
+
+1. **Popup debugging** - Right-click popup → "Inspect"
+2. **Background script** - Go to `chrome://extensions` → "Inspect views"
+3. **Content scripts** - Use webpage DevTools
+4. **Network requests** - Monitor in Network tab
+
+### Q: Extension works in development but not production
+
+**A:** Check these differences:
+
+- **File paths** - Development vs build paths may differ
+- **Environment variables** - May not be available in production
+- **Minification** - Code may behave differently when minified
+- **CSP policies** - Stricter in production builds
+
+### Q: How do I test across different Chrome versions?
+
+**A:** Testing strategies:
+
+- **Chrome Beta/Dev** - Test upcoming features
+- **Chrome for Testing** - Automated testing
+- **Extension compatibility** - Use stable APIs
+- **Feature detection** - Check API availability before use
+
+### Q: Memory leaks in my extension
+
+**A:** Common causes and solutions:
+
+```javascript
+// Bad: Creating listeners without cleanup
+chrome.tabs.onUpdated.addListener(handler);
+
+// Good: Store reference and clean up
+const listener = (tabId, changeInfo, tab) => { /* handler */ };
+chrome.tabs.onUpdated.addListener(listener);
+
+// Clean up when needed
+chrome.tabs.onUpdated.removeListener(listener);
+```
+
+</Section>
+
+## Advanced Topics
+
+<Section>
+
+### Q: Can I use external APIs?
+
+**A:** Yes, with considerations:
+
+- **CORS policies** - May need background script proxy
+- **API keys** - Store securely, consider server-side proxy
+- **Rate limiting** - Implement client-side rate limiting
+- **User privacy** - Minimize data collection
+
+### Q: How do I handle updates?
+
+**A:** Extension update strategies:
+
+```javascript
+// Detect extension updates
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === 'update') {
+    // Handle extension update
+    migrateData(details.previousVersion);
+  }
+});
+
+function migrateData(previousVersion) {
+  // Migrate stored data if needed
+  if (compareVersions(previousVersion, '2.0.0') < 0) {
+    // Migrate from v1.x to v2.0
+  }
+}
+```
+
+### Q: Can I publish to other browsers?
+
+**A:** Cross-browser compatibility:
+
+- **Firefox** - Use WebExtensions (similar to Chrome)
+- **Edge** - Supports Chrome extensions
+- **Safari** - Requires Safari Web Extensions
+- **Opera** - Supports Chrome extensions
+
+Most Chrome extensions work in Firefox with minimal changes.
+
+### Q: Performance best practices
+
+**A:** Optimization tips:
+
+1. **Lazy loading** - Load features when needed
+2. **Efficient storage** - Use appropriate storage APIs
+3. **Minimize background work** - Reduce CPU usage
+4. **Debounce events** - Avoid excessive API calls
+5. **Memory management** - Clean up listeners and references
+
+</Section>
+
+## Getting Help
+
+<Section>
+
+### Q: Where can I get more help?
+
+**A:** Additional resources:
+
+- **Chrome Extension Documentation** - [developer.chrome.com/docs/extensions](https://developer.chrome.com/docs/extensions/)
+- **Stack Overflow** - Tag your questions with `google-chrome-extension`
+- **Chrome Extensions Google Group** - Official community
+- **GitHub Issues** - Report bugs in create-chrome-ext
+- **Chrome Web Store Support** - For publishing issues
+
+### Q: How do I report bugs or request features?
+
+**A:** Use the GitHub repository:
+
+1. **Search existing issues** - Check if already reported
+2. **Provide details** - Template used, steps to reproduce
+3. **Include logs** - Console errors and build output
+4. **Minimal reproduction** - Simplest example that shows the issue
+
+### Q: Can I contribute to create-chrome-ext?
+
+**A:** Contributions are welcome! Areas that need help:
+
+- **Additional templates** - TypeScript, Vue, Angular
+- **Documentation improvements** - Tutorials and guides
+- **Bug fixes** - Issue reproduction and fixes
+- **Feature enhancements** - New CLI options and features
+
+</Section>
+
+<DocsNavigation
+  previous={{
+    href: "/docs/chrome-apis",
+    title: "Chrome APIs",
+    description: "Working with extension APIs"
+  }}
+  next={{
+    href: "/docs",
+    title: "Documentation Home",
+    description: "Back to main documentation"
+  }}
+/>

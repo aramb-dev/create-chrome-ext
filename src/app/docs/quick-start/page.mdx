@@ -1,0 +1,157 @@
+# Quick Start
+
+Get your first Chrome extension up and running in just a few minutes.
+
+## Installation
+
+The fastest way to get started is using npx, which will always use the latest version:
+
+```bash
+npx create-chrome-ext
+```
+
+You can also install it globally if you plan to create multiple extensions:
+
+```bash
+npm install -g create-chrome-ext
+create-chrome-ext
+```
+
+## Creating Your First Extension
+
+<Section>
+
+When you run the command, you'll be prompted to:
+
+1. **Enter a project name** - This will be the folder name for your extension
+2. **Choose a template** - Select from Vanilla JS, React + Vite, or React + Next.js
+3. **Configure additional options** - Such as enabling TypeScript (for React templates)
+
+The tool will then:
+- Create a new directory with your project name
+- Install all necessary dependencies
+- Set up the project structure
+- Generate a complete `manifest.json` file
+
+</Section>
+
+## Development Workflow
+
+<Section>
+
+### Start the Development Server
+
+Navigate to your project directory and start the development server:
+
+```bash
+cd my-extension
+npm run dev
+```
+
+This will:
+- Build your extension in development mode
+- Watch for file changes
+- Enable hot reload for supported templates
+
+### Load the Extension in Chrome
+
+1. Open Chrome and navigate to `chrome://extensions`
+2. Enable "Developer mode" using the toggle in the top-right corner
+3. Click "Load unpacked" button
+4. Select your project's build directory:
+   - **Vanilla JS**: Select the root project folder
+   - **React + Vite**: Select the `dist` folder
+   - **React + Next.js**: Select the `out` folder
+
+<Alert type="info">
+The extension will appear in your extensions list and be available for testing immediately.
+</Alert>
+
+</Section>
+
+## Making Changes
+
+<Section>
+
+### Hot Reload
+
+For React templates, changes to your code will automatically reload the extension. For Vanilla JS, you may need to manually reload the extension in Chrome.
+
+### File Structure
+
+Each template provides a different file structure, but they all include:
+
+- `manifest.json` - Extension configuration
+- `package.json` - Dependencies and scripts
+- Main entry files for your extension logic
+
+### Testing Your Changes
+
+After making changes:
+1. The extension should reload automatically (React templates)
+2. Or click the refresh button next to your extension (Vanilla JS)
+3. Test your extension's functionality in Chrome
+
+</Section>
+
+## Building for Production
+
+<Section>
+
+When you're ready to package your extension:
+
+```bash
+npm run build
+```
+
+This creates an optimized, production-ready build that you can:
+- Upload to the Chrome Web Store
+- Share with others
+- Package as a `.crx` file
+
+The build will be in the same directory as development (`dist`, `out`, or root folder).
+
+</Section>
+
+## Common Commands
+
+<Section>
+
+Every generated project includes these npm scripts:
+
+```bash
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run tests (if available)
+npm test
+
+# Lint code (React templates)
+npm run lint
+```
+
+</Section>
+
+## Next Steps
+
+Now that you have a working extension, you can:
+
+- **[Explore Templates](/docs/templates/vanilla)** - Learn about each template in detail
+- **[Understand Project Structure](/docs/project-structure)** - Dive into the generated files
+- **[Chrome APIs Guide](/docs/chrome-apis)** - Learn how to use extension APIs
+
+<DocsNavigation
+  previous={{
+    href: "/docs",
+    title: "Documentation",
+    description: "Introduction to create-chrome-ext"
+  }}
+  next={{
+    href: "/docs/templates/vanilla",
+    title: "Vanilla JavaScript Template",
+    description: "Learn about the lightweight vanilla template"
+  }}
+/>

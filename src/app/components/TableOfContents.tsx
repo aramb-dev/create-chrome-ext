@@ -15,9 +15,11 @@ export default function TableOfContents() {
   useEffect(() => {
     // Generate TOC from headings
     const headings = document.querySelectorAll('h1, h2, h3, h4');
-    const tocItems: TocItem[] = Array.from(headings).map((heading) => {
-      const id = heading.id || heading.textContent?.toLowerCase().replace(/\s+/g, '-') || '';
-      if (!heading.id) {
+    const tocItems: TocItem[] = Array.from(headings).map((heading, index) => {
+      let id = heading.id;
+      if (!id) {
+        const baseId = heading.textContent?.toLowerCase().replace(/\s+/g, '-') || `heading-${index}`;
+        id = `${baseId}-${index}`;
         heading.id = id;
       }
       return {

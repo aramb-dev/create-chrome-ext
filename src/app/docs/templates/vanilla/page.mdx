@@ -1,0 +1,251 @@
+# Vanilla JavaScript Template
+
+This is the most lightweight and straightforward template. It's perfect for simple extensions, learning the core Chrome APIs, or when you want maximum performance with no framework overhead.
+
+## When to Use Vanilla JS
+
+<Section>
+
+Choose the Vanilla JavaScript template when you want:
+
+- **Simple extensions** - For basic popups or content scripts
+- **Zero dependencies** - No framework overhead or build complexity
+- **Direct DOM control** - Un-abstracted access to web APIs
+- **Maximum performance** - Smallest possible bundle size
+- **Learning Chrome APIs** - Focus on extension concepts without framework abstractions
+
+</Section>
+
+## Project Structure
+
+When you create a Vanilla JS extension, you get the following structure:
+
+```
+vanilla-js/
+├── icons/
+│   ├── icon16.png
+│   ├── icon48.png
+│   └── icon128.png
+├── manifest.json
+├── package.json
+├── popup.html
+├── popup.css
+└── popup.js
+```
+
+<Section>
+
+### Key Files
+
+- **`manifest.json`** - The core manifest file that defines your extension
+- **`popup.html`** - The HTML for the extension's popup window
+- **`popup.js`** - The JavaScript logic for the popup
+- **`popup.css`** - Styles for your popup interface
+- **`icons/`** - Extension icons in different sizes (16px, 48px, 128px)
+
+</Section>
+
+## Development Workflow
+
+<Section>
+
+### Starting Development
+
+```bash
+cd my-vanilla-extension
+npm run dev
+```
+
+The vanilla template doesn't require a build step, so the development command simply:
+- Copies files to a `dist` directory
+- Watches for changes
+- Updates the extension when files change
+
+### Loading in Chrome
+
+1. Open `chrome://extensions`
+2. Enable Developer mode
+3. Click "Load unpacked"
+4. Select your project's root directory (or `dist` if generated)
+
+</Section>
+
+## Key Features
+
+<Section>
+
+### Pre-configured Manifest
+
+Your `manifest.json` comes with sensible defaults:
+
+```json
+{
+  "manifest_version": 3,
+  "name": "My Extension",
+  "version": "1.0.0",
+  "description": "A Chrome extension built with create-chrome-ext",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "My Extension"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": []
+}
+```
+
+### Basic Popup Interface
+
+The generated popup provides a starting point with:
+- Clean HTML structure
+- Basic CSS styling
+- JavaScript event handling examples
+- Chrome API usage patterns
+
+</Section>
+
+## Adding Functionality
+
+<Section>
+
+### Background Scripts
+
+To add a background script, update your `manifest.json`:
+
+```json
+{
+  "background": {
+    "service_worker": "background.js"
+  }
+}
+```
+
+Then create `background.js` in your project root.
+
+### Content Scripts
+
+For content scripts that run on web pages:
+
+```json
+{
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"]
+  }]
+}
+```
+
+### Permissions
+
+Add permissions as needed:
+
+```json
+{
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab"
+  ]
+}
+```
+
+</Section>
+
+## Example: Simple Tab Counter
+
+<Section>
+
+Here's a simple example that counts open tabs:
+
+**popup.html:**
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Tab Counter</h1>
+    <p>Open tabs: <span id="tabCount">Loading...</span></p>
+    <button id="refreshBtn">Refresh</button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
+```
+
+**popup.js:**
+```javascript
+async function updateTabCount() {
+  const tabs = await chrome.tabs.query({});
+  document.getElementById('tabCount').textContent = tabs.length;
+}
+
+document.getElementById('refreshBtn').addEventListener('click', updateTabCount);
+
+// Update count when popup opens
+updateTabCount();
+```
+
+**manifest.json** (add permissions):
+```json
+{
+  "permissions": ["tabs"]
+}
+```
+
+</Section>
+
+## Building for Production
+
+<Section>
+
+```bash
+npm run build
+```
+
+For Vanilla JS, the build process:
+- Minifies JavaScript and CSS
+- Optimizes images
+- Creates a production-ready package
+- Validates the manifest file
+
+The output is ready to upload to the Chrome Web Store.
+
+</Section>
+
+## Advantages & Trade-offs
+
+<Section>
+
+### Advantages
+- **Fastest performance** - No framework overhead
+- **Smallest bundle size** - Only your code and assets
+- **Direct API access** - No abstraction layers
+- **Simple debugging** - Straightforward call stacks
+- **Quick setup** - Minimal configuration required
+
+### Trade-offs
+- **More boilerplate** - Manual DOM manipulation
+- **No hot reload** - Manual extension reloading during development
+- **Limited tooling** - Basic build pipeline
+- **Manual state management** - No built-in state solutions
+
+</Section>
+
+<DocsNavigation
+  previous={{
+    href: "/docs/quick-start",
+    title: "Quick Start",
+    description: "Get your first extension running"
+  }}
+  next={{
+    href: "/docs/templates/react-vite",
+    title: "React + Vite Template",
+    description: "Modern React development with fast HMR"
+  }}
+/>

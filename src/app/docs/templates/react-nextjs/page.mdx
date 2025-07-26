@@ -1,0 +1,415 @@
+# React + Next.js Template
+
+This template is for developers who want to leverage the structure and features of a full-fledged framework. It's configured for static export, making it suitable for multi-page extensions with complex routing and features.
+
+## When to Use React + Next.js
+
+<Section>
+
+Choose the React + Next.js template when you want:
+
+- **Multi-page extensions** - Popup, options page, and full-page applications
+- **File-based routing** - Organized page structure with Next.js routing
+- **Next.js ecosystem** - Leverage Next.js features and optimizations
+- **Complex applications** - Extensions that need advanced architecture
+- **Server-side features** - Static generation and optimization (at build time)
+
+</Section>
+
+## Project Structure
+
+When you create a React + Next.js extension, you get:
+
+```
+react-next/
+├── pages/
+│   ├── index.js          # Main popup page
+│   ├── options.js        # Options page
+│   └── _app.js           # App wrapper
+├── public/
+│   ├── icons/
+│   │   ├── icon16.png
+│   │   ├── icon48.png
+│   │   └── icon128.png
+│   └── manifest.json
+├── scripts/
+│   └── post-build.js     # Handles _next folder renaming
+├── styles/
+│   ├── globals.css
+│   └── Home.module.css
+├── next.config.js
+└── package.json
+```
+
+<Section>
+
+### Key Files
+
+- **`pages/`** - Next.js pages that become extension pages
+- **`scripts/post-build.js`** - Renames `_next` to `next` for Chrome compatibility
+- **`next.config.js`** - Configured with `output: 'export'` for static generation
+- **`public/manifest.json`** - Extension manifest with multiple pages configured
+
+</Section>
+
+## Development Workflow
+
+<Section>
+
+### Starting Development
+
+```bash
+cd my-nextjs-extension
+npm run dev
+```
+
+This starts Next.js development server with:
+- **Fast refresh** - React components update instantly
+- **File-based routing** - Automatic page routing
+- **Built-in optimizations** - Image optimization, font loading, etc.
+- **Development tools** - Next.js debugging and error reporting
+
+### Loading in Chrome
+
+1. Run `npm run build` to generate the extension
+2. Open `chrome://extensions`
+3. Enable Developer mode
+4. Click "Load unpacked"
+5. Select the `out` folder
+
+<Alert type="warning">
+**Important**: Chrome extensions cannot have folders starting with underscore (`_`). This template includes a post-build script that automatically renames the `_next` folder to `next` and updates all file paths. This process is handled automatically during `npm run build`.
+</Alert>
+
+</Section>
+
+## Key Features
+
+<Section>
+
+### Static Export Configuration
+
+The `next.config.js` is configured for static export:
+
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: 'export',
+  trailingSlash: true,
+  images: {
+    unoptimized: true
+  },
+  assetPrefix: process.env.NODE_ENV === 'production' ? './' : ''
+}
+
+module.exports = nextConfig
+```
+
+### Multi-Page Support
+
+The template includes multiple pages by default:
+
+- **Popup** (`pages/index.js`) - Main extension popup
+- **Options** (`pages/options.js`) - Extension settings page
+- **Custom pages** - Add any additional pages you need
+
+### Automatic Path Fixing
+
+The `post-build.js` script:
+- Renames `out/_next` to `out/next`
+- Updates all file references
+- Ensures Chrome compatibility
+- Runs automatically after build
+
+</Section>
+
+## Example: Multi-Page Bookmark Manager
+
+<Section>
+
+Here's an example of a bookmark manager with multiple pages:
+
+**pages/index.js** (Popup):
+```jsx
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import styles from '../styles/Home.module.css'
+
+export default function Popup() {
+  const [recentBookmarks, setRecentBookmarks] = useState([])
+
+  useEffect(() => {
+    loadRecentBookmarks()
+  }, [])
+
+  const loadRecentBookmarks = async () => {
+    const bookmarks = await chrome.bookmarks.getRecent(5)
+    setRecentBookmarks(bookmarks)
+  }
+
+  return (
+    <div className={styles.popup}>
+      <header>
+        <h1>Bookmark Manager</h1>
+        <Link href="/options">
+          <button className={styles.settingsBtn}>Settings</button>
+        </Link>
+      </header>
+
+      <section>
+        <h2>Recent Bookmarks</h2>
+        {recentBookmarks.map(bookmark => (
+          <div key={bookmark.id} className={styles.bookmarkItem}>
+            <a href={bookmark.url} target="_blank" rel="noopener noreferrer">
+              {bookmark.title}
+            </a>
+          </div>
+        ))}
+      </section>
+    </div>
+  )
+}
+```
+
+**pages/options.js** (Options Page):
+```jsx
+import { useState, useEffect } from 'react'
+import styles from '../styles/Options.module.css'
+
+export default function Options() {
+  const [settings, setSettings] = useState({
+    autoSort: false,
+    showFavicons: true,
+    maxRecent: 5
+  })
+
+  useEffect(() => {
+    loadSettings()
+  }, [])
+
+  const loadSettings = async () => {
+    const result = await chrome.storage.sync.get(['bookmarkSettings'])
+    if (result.bookmarkSettings) {
+      setSettings(result.bookmarkSettings)
+    }
+  }
+
+  const saveSettings = async () => {
+    await chrome.storage.sync.set({ bookmarkSettings: settings })
+    alert('Settings saved!')
+  }
+
+  return (
+    <div className={styles.container}>
+      <h1>Bookmark Manager Settings</h1>
+
+      <form onSubmit={(e) => { e.preventDefault(); saveSettings() }}>
+        <label>
+          <input
+            type="checkbox"
+            checked={settings.autoSort}
+            onChange={(e) => setSettings({
+              ...settings,
+              autoSort: e.target.checked
+            })}
+          />
+          Auto-sort bookmarks
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={settings.showFavicons}
+            onChange={(e) => setSettings({
+              ...settings,
+              showFavicons: e.target.checked
+            })}
+          />
+          Show favicons
+        </label>
+
+        <label>
+          Max recent bookmarks:
+          <input
+            type="number"
+            min="1"
+            max="20"
+            value={settings.maxRecent}
+            onChange={(e) => setSettings({
+              ...settings,
+              maxRecent: parseInt(e.target.value)
+            })}
+          />
+        </label>
+
+        <button type="submit">Save Settings</button>
+      </form>
+    </div>
+  )
+}
+```
+
+**manifest.json**:
+```json
+{
+  "manifest_version": 3,
+  "name": "Bookmark Manager",
+  "version": "1.0.0",
+  "description": "Advanced bookmark management",
+  "action": {
+    "default_popup": "index.html"
+  },
+  "options_page": "options.html",
+  "permissions": ["bookmarks", "storage"],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
+```
+
+</Section>
+
+## Advanced Features
+
+<Section>
+
+### API Routes (Build Time)
+
+You can use Next.js API routes for build-time data processing:
+
+```javascript
+// pages/api/process-data.js
+export default function handler(req, res) {
+  // This runs at build time with static export
+  // Useful for pre-processing data
+}
+```
+
+### Image Optimization
+
+Configure images for extensions:
+
+```javascript
+// next.config.js
+const nextConfig = {
+  images: {
+    unoptimized: true, // Required for static export
+    formats: ['image/webp', 'image/avif']
+  }
+}
+```
+
+### CSS-in-JS
+
+Next.js supports various CSS solutions:
+
+```bash
+# Styled Components
+npm install styled-components
+
+# Emotion
+npm install @emotion/react @emotion/styled
+
+# Styled JSX (built-in)
+# No installation needed
+```
+
+</Section>
+
+## Building for Production
+
+<Section>
+
+```bash
+npm run build
+```
+
+The build process:
+1. **Next.js static export** - Generates static HTML/CSS/JS
+2. **Path correction** - Fixes asset paths for Chrome
+3. **Folder renaming** - Renames `_next` to `next`
+4. **Manifest validation** - Ensures all pages are properly referenced
+
+The `out` folder contains your complete extension ready for the Chrome Web Store.
+
+### Build Script Details
+
+The build process runs these commands:
+```bash
+next build && node scripts/post-build.js
+```
+
+The post-build script ensures Chrome compatibility by handling path issues automatically.
+
+</Section>
+
+## Configuration Options
+
+<Section>
+
+### TypeScript Support
+
+Add TypeScript to your Next.js extension:
+
+```bash
+npm install -D typescript @types/react @types/node
+```
+
+Then rename files to `.tsx` and Next.js will automatically configure TypeScript.
+
+### Environment Variables
+
+Create `.env.local` for environment-specific settings:
+
+```env
+NEXT_PUBLIC_API_URL=https://api.example.com
+EXTENSION_VERSION=1.0.0
+```
+
+### Custom App Configuration
+
+Modify `pages/_app.js` for global setup:
+
+```jsx
+import '../styles/globals.css'
+
+export default function App({ Component, pageProps }) {
+  return <Component {...pageProps} />
+}
+```
+
+</Section>
+
+## Advantages & Trade-offs
+
+<Section>
+
+### Advantages
+- **File-based routing** - Organized page structure
+- **Built-in optimizations** - Image, font, and code optimizations
+- **Developer experience** - Excellent debugging and error handling
+- **Ecosystem compatibility** - Works with most Next.js plugins
+- **Multi-page support** - Perfect for complex extensions
+
+### Trade-offs
+- **Larger bundle size** - Next.js framework overhead
+- **Build complexity** - More sophisticated build process
+- **Learning curve** - Requires Next.js knowledge
+- **Static export limitations** - No server-side features at runtime
+
+</Section>
+
+<DocsNavigation
+  previous={{
+    href: "/docs/templates/react-vite",
+    title: "React + Vite Template",
+    description: "Modern React development with Vite"
+  }}
+  next={{
+    href: "/docs/project-structure",
+    title: "Project Structure",
+    description: "Understanding the generated files"
+  }}
+/>
