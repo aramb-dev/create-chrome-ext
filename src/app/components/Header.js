@@ -1,6 +1,10 @@
+"use client";
 import Link from 'next/link';
+import { useState } from 'react';
 
 const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
     <header className="bg-gray-900/80 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-700">
       <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
@@ -26,7 +30,7 @@ const Header = () => {
             <span>GitHub</span>
           </a>
         </div>
-        <button id="mobile-menu-button" className="md:hidden">
+        <button id="mobile-menu-button" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
           <svg className="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
             strokeWidth="1.5" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round"
@@ -35,7 +39,7 @@ const Header = () => {
         </button>
       </nav>
       {/* Mobile Menu */}
-      <div id="mobile-menu" className="hidden md:hidden px-6 pb-4 space-y-2">
+      <div id="mobile-menu" className={`${isMenuOpen ? '' : 'hidden'} md:hidden px-6 pb-4 space-y-2`}>
         <Link href="#features" className="block hover:text-indigo-400 transition-colors">Features</Link>
         <Link href="#getting-started" className="block hover:text-indigo-400 transition-colors">Get Started</Link>
         <Link href="#docs" className="block hover:text-indigo-400 transition-colors">Docs</Link>

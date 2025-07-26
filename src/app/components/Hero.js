@@ -1,6 +1,18 @@
-import React from 'react';
+"use client";
+import React, { useState } from 'react';
 
 const Hero = () => {
+  const [copyButtonText, setCopyButtonText] = useState('Copy');
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText('$ npx create-chrome-ext').then(() => {
+      setCopyButtonText('Copied!');
+      setTimeout(() => {
+        setCopyButtonText('Copy');
+      }, 2000);
+    });
+  };
+
   return (
     <section className="text-center">
       <h2 className="text-4xl md:text-6xl font-black text-white leading-tight">
@@ -19,6 +31,7 @@ const Hero = () => {
           </code>
           <button
             id="copy-button"
+            onClick={handleCopy}
             className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 transform active:scale-95 flex items-center space-x-2"
           >
             <svg
@@ -35,7 +48,7 @@ const Hero = () => {
                 d="M8.25 7.5V6.108c0-1.135.845-2.098 1.976-2.192.353-.026.692-.026 1.038 0 .346.026.692.026 1.038 0 1.13.094 1.976 1.057 1.976 2.192V7.5M8.25 7.5h7.5M8.25 7.5c0 1.135-.845 2.098-1.976 2.192a48.424 48.424 0 01-1.038 0C4.12 9.598 3.275 8.635 3.275 7.5m5 0c0 .947.376 1.842.984 2.493m4.032-2.493c.608-.65.984-1.546.984-2.493m-4.032 2.493L9.75 10.5m4.032-2.493L14.25 10.5"
               />
             </svg>
-            <span id="copy-button-text">Copy</span>
+            <span id="copy-button-text">{copyButtonText}</span>
           </button>
         </div>
       </div>
