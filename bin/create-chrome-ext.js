@@ -17,44 +17,63 @@ program
   .name('create-chrome-ext')
   .description('CLI to create a new Chrome Extension project')
   .argument('[project-name]', 'The name of the project')
+  .option('-o, --overwrite', 'Force overwrite of existing directory')
   .action(run);
 
 program.parse(process.argv);
 
-async function run(projectName) {
+async function run(projectName, options) {
   let project = projectName;
-
-  if (!project) {
-    const answers = await inquirer.prompt([
-      {
-        type: 'input',
-        name: 'projectName',
-        message: 'What is the name of your project?',
-        validate: (input) => (input ? true : 'Project name cannot be empty.'),
-      },
-    ]);
-    project = answers.projectName;
-  }
-
-  const projectPath = path.resolve(process.cwd(), project);
-
-  if (fs.existsSync(projectPath)) {
-    console.error(chalk.red(`Error: Directory "${project}" already exists.`));
-    process.exit(1);
-  }
-
-  const { template } = await inquirer.prompt([
-    {
-      type: 'list',
-      name: 'template',
-      message: 'Choose a project template:',
-      choices: ['vanilla-js', 'react-vite', 'react-next'],
-    },
-  ]);
-
-  const templateDir = path.resolve(__dirname, '..', 'templates', template);
+  let projectPath;
 
   try {
+    if (!project) {
+      const answers = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'projectName',
+          message: 'What is the name of your project?',
+          validate: (input) => (input ? true : 'Project name cannot be empty.'),
+        },
+      ]);
+      project = answers.projectName;
+    }
+
+    projectPath = path.resolve(process.cwd(), project);
+
+    if (fs.existsSync(projectPath)) {
+      if (options.overwrite) {
+        fs.emptyDirSync(projectPath);
+      } else {
+        const { overwrite } = await inquirer.prompt([
+          {
+            type: 'confirm',
+            name: 'overwrite',
+            message: `Directory "${project}" already exists. Overwrite?`,
+            default: false,
+          },
+        ]);
+
+        if (!overwrite) {
+          console.log(chalk.yellow('Operation cancelled.'));
+          process.exit(0);
+        }
+
+        fs.emptyDirSync(projectPath);
+      }
+    }
+
+    const { template } = await inquirer.prompt([
+      {
+        type: 'list',
+        name: 'template',
+        message: 'Choose a project template:',
+        choices: ['vanilla-js', 'react-vite', 'react-next'],
+      },
+    ]);
+
+    const templateDir = path.resolve(__dirname, '..', 'templates', template);
+
     console.log(chalk.blue(`Creating project in ${projectPath}...`));
     await fs.copy(templateDir, projectPath);
 
@@ -86,14 +105,18 @@ async function run(projectName) {
     console.log(chalk.green(`\nTo get started, run the following commands:`));
     console.log(chalk.cyan(`  cd ${project}`));
     console.log(chalk.cyan(`  npm run dev`));
-
   } catch (error) {
-    console.error(chalk.red('An error occurred during project creation:'));
-    console.error(error);
-    // Clean up created directory on error
-    if (fs.existsSync(projectPath)) {
-      fs.removeSync(projectPath);
+    if (error.constructor.name === 'ExitPromptError') {
+      console.log(chalk.yellow('Operation cancelled.'));
+      process.exit(0);
+    } else {
+      console.error(chalk.red('An error occurred during project creation:'));
+      console.error(error);
+      // Clean up created directory on error
+      if (projectPath && fs.existsSync(projectPath)) {
+        fs.removeSync(projectPath);
+      }
+      process.exit(1);
     }
-    process.exit(1);
   }
 }
