@@ -98,13 +98,13 @@ export default function DocsSidebar() {
           </h3>
         </div>
 
-        <nav className="space-y-6">
+        <nav className="space-y-8">
           {navigation.map((section) => (
             <div key={section.title}>
-              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4">
                 {section.title}
               </h4>
-              <ul className="space-y-1">
+              <ul className="space-y-1.5">
                 {section.items.map((item) => {
                   const Icon = item.icon;
                   const isActive = pathname === item.href;
@@ -113,25 +113,19 @@ export default function DocsSidebar() {
                     <li key={item.href}>
                       <Link
                         href={item.href}
+                        title={item.description}
                         className={`
-                          group flex items-center space-x-3 px-3 py-2 rounded-md text-sm transition-all duration-200
+                          group flex items-center space-x-3 px-3 py-2.5 rounded-md text-sm transition-all duration-200 relative
                           ${isActive
-                            ? 'bg-indigo-600/20 text-indigo-400 border-l-2 border-indigo-400'
-                            : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/50'
+                            ? 'bg-indigo-600/15 text-indigo-300 border-l-2 border-indigo-400'
+                            : 'text-gray-300 hover:text-gray-100 hover:bg-gray-800/40'
                           }
                         `}
                       >
                         <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-indigo-400' : 'text-gray-500 group-hover:text-gray-400'}`} />
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium truncate">
-                            {item.title}
-                          </div>
-                          {item.description && (
-                            <div className="text-xs text-gray-500 mt-0.5 line-clamp-1">
-                              {item.description}
-                            </div>
-                          )}
-                        </div>
+                        <span className="font-medium truncate">
+                          {item.title}
+                        </span>
                       </Link>
                     </li>
                   );

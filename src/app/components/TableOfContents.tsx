@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { ChevronRight } from 'lucide-react';
 
 interface TocItem {
   id: string;
@@ -60,8 +59,8 @@ export default function TableOfContents() {
   if (toc.length === 0) return null;
 
   return (
-    <div className="hidden xl:block fixed right-8 top-1/2 transform -translate-y-1/2 w-64">
-      <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg p-4">
+    <div className="hidden xl:block fixed right-8 top-32 w-64">
+      <div className="bg-gray-900/20 backdrop-blur-sm border border-gray-700/30 rounded-lg p-4">
         <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">
           On this page
         </h4>
@@ -71,21 +70,18 @@ export default function TableOfContents() {
               key={item.id}
               onClick={() => scrollToSection(item.id)}
               className={`
-                block w-full text-left text-sm transition-colors duration-200
+                block w-full text-left text-sm transition-all duration-200 py-1 border-l-2 relative
                 ${item.level === 1 ? 'font-semibold' : ''}
-                ${item.level === 2 ? 'pl-0' : ''}
-                ${item.level === 3 ? 'pl-4' : ''}
-                ${item.level === 4 ? 'pl-8' : ''}
+                ${item.level === 2 ? 'pl-3' : ''}
+                ${item.level === 3 ? 'pl-6' : ''}
+                ${item.level === 4 ? 'pl-9' : ''}
                 ${activeId === item.id
-                  ? 'text-indigo-400 border-l-2 border-indigo-400 pl-3'
-                  : 'text-gray-400 hover:text-gray-200 pl-3 border-l-2 border-transparent'
+                  ? 'text-indigo-300 border-indigo-400 bg-indigo-500/5'
+                  : 'text-gray-400 hover:text-gray-200 border-transparent hover:border-gray-600'
                 }
               `}
             >
-              <span className="flex items-center">
-                {activeId === item.id && (
-                  <ChevronRight className="w-3 h-3 mr-1 flex-shrink-0" />
-                )}
+              <span className="block">
                 {item.text}
               </span>
             </button>
